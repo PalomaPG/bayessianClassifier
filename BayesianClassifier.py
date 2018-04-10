@@ -21,12 +21,7 @@ class BayesianClassifier(object):
     def __init__(self, input_file):
         self.input_file = input_file
         self.set_info()
-        histoApprox = HistogramApprox()
-        histoApprox.set_pdfs(self.data, self.train_idx)
-        #histoApprox.evaluation(self.test_idx, self.data, self.priori_pulsar, self.priori_nonpulsar)
-        multidimGauss = MultidimGaussian()
-        multidimGauss.calc_stats(self.data, self.train_idx)
-        multidimGauss.evaluation(self.data, self.test_idx, self.priori_pulsar, self.priori_nonpulsar)
+
 
     def set_info(self):
 
@@ -45,6 +40,23 @@ class BayesianClassifier(object):
         self.priori_pulsar = float(n_pulsars)/float(train_len)
         self.priori_nonpulsar = float(n_nonpulsars) / float(train_len)
 
+    def bayessianEvaluation(self, theta):
+        histoApprox = HistogramApprox()
+        histoApprox.set_pdfs(self.data, self.train_idx)
+        histoApprox.evaluation(self.test_idx, self.data, self.priori_pulsar, self.priori_nonpulsar, theta)
+
+    def multiGaussianEvaluation(self, theta):
+
+        multidimGauss = MultidimGaussian()
+        multidimGauss.calc_stats(self.data, self.train_idx)
+        multidimGauss.evaluation(self.data, self.test_idx,  theta)
+
+
+    def evaluation(self):
+
+        theta = self.priori_nonpulsar/self.priori_pulsar
+        self.bayessianEvaluation(theta)
+        self.multiGaussianEvaluation(theta)
 
     '''
     def check_prob(self, mu, sigma, x):

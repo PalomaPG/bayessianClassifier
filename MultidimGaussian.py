@@ -50,16 +50,16 @@ class MultidimGaussian(object):
         fact = np.power((2*np.pi), 4)*(np.linalg.det(self.sigmas_pulsar)**.5)
         return exp/fact
 
-    def evaluation(self, data, test_idx, priori_pulsar, priori_nonpulsar):
+    def evaluation(self, data, test_idx, theta):
 
         for i in test_idx:
             d = data[i]
             post_non= self.calc_prob_nonpulsar(np.array(d[:8]).astype(float))
             post= self.calc_prob_pulsar(np.array(d[:8]).astype(float))
             post_ratio = post/post_non
-            prior_ratio = priori_nonpulsar/priori_pulsar
+            #prior_ratio = priori_nonpulsar/priori_pulsar
             print('----------------------')
-            print(post_ratio>prior_ratio)
+            print(post_ratio>theta)
             print(d[8]=='1')
 
 

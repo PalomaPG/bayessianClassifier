@@ -33,7 +33,7 @@ class HistogramApprox(object):
             [mu, sigma] = self.histo_prob(i, False, 0, data, train_idx)
             self.pdfs_nonpulsars.append(norm(mu, sigma))
 
-    def is_pulsar(self, d, priori_pulsar, priori_nonpulsar):
+    def is_pulsar(self, d, priori_pulsar, priori_nonpulsar, theta):
 
         #print(d)
         post_pulsar = priori_pulsar
@@ -43,13 +43,13 @@ class HistogramApprox(object):
             post_nonpulsar = self.pdfs_nonpulsars[i].pdf(float(d[i]))*post_nonpulsar
 
         post_ratio = post_pulsar/post_nonpulsar
-        prior_ratio = priori_nonpulsar/priori_pulsar
+        #prior_ratio = priori_nonpulsar/priori_pulsar
 
-        return post_ratio > prior_ratio
+        return post_ratio > theta
 
-    def evaluation(self, test_idx, data, priori_pulsar, priori_nonpulsar):
+    def evaluation(self, test_idx, data, priori_pulsar, priori_nonpulsar, theta):
 
         for i in test_idx:
             d = data[i]
-            print(self.is_pulsar(d, priori_pulsar, priori_nonpulsar))
+            print(self.is_pulsar(d, priori_pulsar, priori_nonpulsar, theta))
             print(int(d[8]) == 1)
