@@ -21,7 +21,8 @@ class Classifier(object):
     def __init__(self, input_file):
         self.input_file = input_file
         self.set_info()
-
+        self.cost_ratio = np.random.uniform(low=0.01, high=100, size=20)
+        print(self.cost_ratio)
 
     def set_info(self):
 
@@ -52,11 +53,15 @@ class Classifier(object):
         multidimGauss.evaluation(self.data, self.test_idx,  theta)
 
 
-    def evaluation(self):
+    def evaluation(self, theta):
 
-        theta = self.priori_nonpulsar/self.priori_pulsar
+        #theta = self.priori_nonpulsar/self.priori_pulsar
         self.bayessianEvaluation(theta)
         self.multiGaussianEvaluation(theta)
+
+    def roc_curves(self):
+
+        thetas = self.cost_ratio*(self.priori_nonpulsar/self.priori_pulsar)
 
     '''
     def check_prob(self, mu, sigma, x):

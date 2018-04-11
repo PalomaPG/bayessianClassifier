@@ -12,6 +12,10 @@ class MultidimGaussian(object):
         self.sigmas_nonpulsar = np.zeros(8)
         self.inv = None
         self.inv_non = None
+        self.fpr = 0 #falsos positivos
+        self.vpr = 0 #verdaderos positivos
+        self.negatives = 0
+        self.positives = 0
 
     def calc_stats(self, data, train_idx):
 
@@ -54,13 +58,14 @@ class MultidimGaussian(object):
 
         for i in test_idx:
             d = data[i]
-            post_non= self.calc_prob_nonpulsar(np.array(d[:8]).astype(float))
-            post= self.calc_prob_pulsar(np.array(d[:8]).astype(float))
+            post_non= self.calc_prob_nonpulsar(np.array(d[:8]).astype('float64'))
+            if post_non==0.0:
+                post_non = 0.000001
+
+            post= self.calc_prob_pulsar(np.array(d[:8]).astype('float64'))
             post_ratio = post/post_non
-            #prior_ratio = priori_nonpulsar/priori_pulsar
-            print('----------------------')
-            print(post_ratio>theta)
-            print(d[8]=='1')
+            post_ratio>theta
+            print(d[8] == '1')
 
 
 
