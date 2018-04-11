@@ -1,11 +1,11 @@
 import sys
-from BayesianClassifier import BayesianClassifier
+from Classifier import Classifier
 
 
 def main(input_file):
 
-    bc = BayesianClassifier(input_file)
-    bc.evaluation()
+    c = Classifier(input_file)
+    c.evaluation()
 
 
 if __name__=="__main__":

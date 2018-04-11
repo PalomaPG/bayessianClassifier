@@ -5,7 +5,7 @@ from HistogramApprox import HistogramApprox
 from MultidimGaussian import MultidimGaussian
 
 
-class BayesianClassifier(object):
+class Classifier(object):
 
     input_file = None
     data = None
