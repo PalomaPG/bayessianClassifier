@@ -10,9 +10,9 @@ class HistogramApprox(object):
 
     def __init__(self):
         self.fpr = 0 #falsos positivos
-        self.vpr = 0 #verdaderos positivos
-        self.negatives = 0
-        self.positives = 0
+        self.tpr = 0 #verdaderos positivos
+        self.true_negatives = 0
+        self.false_negatives = 0
 
 
     def histo_prob(self, att, show, pulsar, data, train_idx):
@@ -21,7 +21,6 @@ class HistogramApprox(object):
         hist, bin_edges = np.histogram(np.array(
             [data[i][att] for i in train_idx if float(data[i][8]) == pulsar]
             ).astype(np.float), bins='auto')
-        print(len(bin_edges))
         [mu, sigma] = norm.fit(hist)
         if show:
             [n, bins, patches] = plt.hist(hist, len(bin_edges), density=True)
@@ -57,5 +56,19 @@ class HistogramApprox(object):
 
         for i in test_idx:
             d = data[i]
-            self.is_pulsar(d, priori_pulsar, priori_nonpulsar, theta)
-            int(d[8]) == 1
+            is_pulsar = self.is_pulsar(d, priori_pulsar, priori_nonpulsar, theta)
+            if not is_pulsar:
+                if int(d[8]) == 1:
+                    self.false_negatives = self.false_negatives + 1
+                else:
+                    self.true_negatives = self.true_negatives + 1
+            if is_pulsar:
+                if int(d[8]) == 1:
+                    self.tpr = self.tpr + 1
+                else:
+                    self.fpr = self.fpr + 1
+
+        self.tpr = float(self.tpr)/float(self.false_negatives + self.tpr)
+        self.fpr = float(self.fpr)/float(self.true_negatives + self.fpr)
+
+        return [self.tpr, self.fpr]

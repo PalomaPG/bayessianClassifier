@@ -3,6 +3,7 @@ import random as rdm
 import numpy as np
 from HistogramApprox import HistogramApprox
 from MultidimGaussian import MultidimGaussian
+import matplotlib.pyplot as plt
 
 
 class Classifier(object):
@@ -21,8 +22,11 @@ class Classifier(object):
     def __init__(self, input_file):
         self.input_file = input_file
         self.set_info()
-        self.cost_ratio = np.random.uniform(low=0.01, high=100, size=20)
-        print(self.cost_ratio)
+        self.cost_ratio = np.random.uniform(low=0.0, high=25.0, size=50)
+        self.histo_fpr = []
+        self.histo_tpr = []
+        self.gauss_fpr = []
+        self.gauss_tpr = []
 
     def set_info(self):
 
@@ -44,28 +48,39 @@ class Classifier(object):
     def bayessianEvaluation(self, theta):
         histoApprox = HistogramApprox()
         histoApprox.set_pdfs(self.data, self.train_idx)
-        histoApprox.evaluation(self.test_idx, self.data, self.priori_pulsar, self.priori_nonpulsar, theta)
+        return histoApprox.evaluation(self.test_idx, self.data, self.priori_pulsar, self.priori_nonpulsar, theta)
 
     def multiGaussianEvaluation(self, theta):
 
-        multidimGauss = MultidimGaussian()
+        multidimGauss = MultidimGaussian(self.priori_pulsar, self.priori_nonpulsar)
         multidimGauss.calc_stats(self.data, self.train_idx)
-        multidimGauss.evaluation(self.data, self.test_idx,  theta)
-
+        return multidimGauss.evaluation(self.data, self.test_idx,  theta)
 
     def evaluation(self, theta):
 
-        #theta = self.priori_nonpulsar/self.priori_pulsar
-        self.bayessianEvaluation(theta)
-        self.multiGaussianEvaluation(theta)
+        [tpr, fpr]=self.bayessianEvaluation(theta)
+        self.histo_tpr.append(tpr)
+        self.histo_fpr.append(fpr)
+
+        [tpr, fpr] =self.multiGaussianEvaluation(theta)
+        self.gauss_tpr.append(tpr)
+        self.gauss_fpr.append(fpr)
 
     def roc_curves(self):
 
         thetas = self.cost_ratio*(self.priori_nonpulsar/self.priori_pulsar)
+        for t in thetas:
+            self.evaluation(t)
 
-    '''
-    def check_prob(self, mu, sigma, x):
-        normie = norm(mu, sigma)
-        return normie.pdf(x)
-    '''
+        plt.scatter(self.histo_fpr, self.histo_tpr,  c="b", alpha=0.5, marker='o')
+        plt.xlabel("False positive rate")
+        plt.ylabel("True positive rate")
+        plt.title("Bayessian Approach")
+        plt.savefig('bayes.png')
 
+        plt.clf()
+        plt.scatter(self.gauss_fpr, self.gauss_tpr,  c="r", alpha=0.5, marker='o')
+        plt.xlabel("False positive rate")
+        plt.ylabel("True positive rate")
+        plt.title("Multidimensional Gaussian")
+        plt.savefig('gauss.png')

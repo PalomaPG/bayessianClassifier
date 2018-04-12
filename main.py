@@ -5,7 +5,7 @@ from Classifier import Classifier
 def main(input_file):
 
     c = Classifier(input_file)
-    c.evaluation()
+    c.roc_curves()
 
 
 if __name__=="__main__":
