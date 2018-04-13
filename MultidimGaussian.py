@@ -1,5 +1,4 @@
 import numpy as np
-from functools import reduce
 
 class MultidimGaussian(object):
 
@@ -11,8 +10,8 @@ class MultidimGaussian(object):
         self.sigmas_nonpulsar = np.zeros(8)
         self.inv = None
         self.inv_non = None
-        self.fpr = 0 #falsos positivos
-        self.tpr = 0 #verdaderos positivos
+        self.fpr = 0
+        self.tpr = 0
         self.true_negatives = 0
         self.false_negatives = 0
         self.prior_non = prior_non
@@ -46,8 +45,6 @@ class MultidimGaussian(object):
         diff = x - self.mus_pulsar
         exp = np.exp(-0.5 * np.dot(diff.T, np.dot(self.inv, diff)), dtype='float64')
         fact = (np.linalg.det(self.sigmas_pulsar) ** .5)
-
-
         return (exp/non_exp)*(non_fact/fact)*(self.prior/self.prior_non)
 
     def evaluation(self, data, test_idx, theta):

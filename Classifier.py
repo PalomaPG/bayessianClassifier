@@ -22,7 +22,7 @@ class Classifier(object):
     def __init__(self, input_file):
         self.input_file = input_file
         self.set_info()
-        self.cost_ratio = np.random.uniform(low=0.0, high=25.0, size=50)
+        self.cost_ratio = np.random.uniform(low=0.0, high=1.0, size=50)
         self.histo_fpr = []
         self.histo_tpr = []
         self.gauss_fpr = []

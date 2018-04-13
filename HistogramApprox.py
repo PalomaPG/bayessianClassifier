@@ -14,10 +14,8 @@ class HistogramApprox(object):
         self.true_negatives = 0
         self.false_negatives = 0
 
-
     def histo_prob(self, att, show, pulsar, data, train_idx):
-        #att: 0-7
-        #pulsar: 1 or 0
+
         hist, bin_edges = np.histogram(np.array(
             [data[i][att] for i in train_idx if float(data[i][8]) == pulsar]
             ).astype(np.float), bins='auto')
